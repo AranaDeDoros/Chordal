@@ -1,7 +1,7 @@
 # Chordal #
 
-Another WIP DSL experiment. A dsl to represent music elements.
-Work with Notes to create Chords and then use those same chords to create Progressions.
+Another WIP DSL experiment. A DSL to represent music elements.
+Work with Notes to create Chords and then use those same Chords to create Progressions.
 
 ### Usage ###
 ```scala
