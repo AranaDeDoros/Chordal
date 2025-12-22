@@ -20,8 +20,8 @@ sealed trait Chord:
 
 case class RegularChord(root: Note, third: Note, fifth: Note,
                         extensions: List[Note] = Nil) extends Chord:
-  override def toString: String = s"($root, $third, $fifth " +
-    s"${if(extensions.nonEmpty) extensions.mkString(",") else ""})"
+  override def toString: String =
+  s"($root, $third, $fifth${if (extensions.nonEmpty) s", ${extensions.mkString(", ")}" else ""})"
 
   override def transposeBy(interval: Interval, backwards: Boolean): Chord =
     if interval.isInstanceOf[Unison.type] then this
