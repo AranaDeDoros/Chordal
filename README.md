@@ -24,7 +24,7 @@ Work with Notes to create Chords and then use those same Chords to create Progre
 ```text
 (C, E, G )
 (C, G)
-(C, E, G A#) <- working on this
+(C, E, G, A#) <- working on this
 ```
 ## TODO in order ##
 1. [ ] Work building progressions
