@@ -31,7 +31,9 @@ case class RegularChord(root: Note, third: Note, fifth: Note,
 
   def toPowerChord = PowerChord(root, fifth)
 
-  def addExtension(extensions: List[Note]) : Chord = this.copy(extensions=extensions)
+  def addExtensions(extensions: List[Note]) : Chord = this.copy(extensions=extensions)
+
+  def addExtension(extension: Note) : Chord = this.copy(extensions=extensions:+extension)
 
 case class PowerChord(root: Note, fifth: Note) extends Chord:
   override def toString: String = s"($root, $fifth)"
