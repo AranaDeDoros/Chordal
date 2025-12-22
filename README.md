@@ -17,7 +17,7 @@ Work with Notes to create Chords and then use those same Chords to create Progre
     println(powerChord)
     // let's add a seventh
     val seventhMinor = root.transposeBy(SeventhMinor)
-    val seventhDom = chord.addExtension(seventhMinor :: Nil)
+    val seventhDom = chord.addExtension(seventhMinor)
     println(s"$seventhDom") //will find out how to work with enharmonics later
 ```
 ### Output ###
