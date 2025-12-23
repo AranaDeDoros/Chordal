@@ -1,7 +1,7 @@
 package org.aranadedoros.chordal
 
 import notes.{FifthPerfect, SeventhMinor, ThirdMajor, note}
-import chords.RegularChord
+import chords.{RegularChord, add9, sus2}
 
 object Main:
   def main(args: Array[String]): Unit =
@@ -17,6 +17,12 @@ object Main:
     println(powerChord)
     // let's add a seventh
     val seventhMinor = root.transposeBy(SeventhMinor)
-    val seventhDom = chord.addExtension(seventhMinor :: Nil)
+    val seventhDom = chord.addExtension(seventhMinor)
     println(s"$seventhDom") //will find out how to work with enharmonics later
+    val susChord = chord.sus2
+    println(susChord)
+    val addChord = chord.add9
+    println(addChord)
+    println(addChord.addedNote)
+    println(addChord.render)
 
