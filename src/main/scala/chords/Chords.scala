@@ -70,7 +70,6 @@ case class AddChord(root: Note, third: Note, fifth: Note,
           interval,
           backwards
         )
-
       AddChord(
         root = transposed(0),
         third = transposed(1),
@@ -80,9 +79,7 @@ case class AddChord(root: Note, third: Note, fifth: Note,
       )
 
 object Add:
-
-  def apply(chord: RegularChord, add: Add): AddChord  =
-
+  def apply(chord: Triad, add: Add): AddChord  =
     require(
       chord.extensions.forall { _ =>
         val seventhMajor = chord.root.transposeBy(SeventhMajorInterval)
@@ -92,7 +89,6 @@ object Add:
       },
       "Add chords cannot contain sevenths"
     )
-
     AddChord(
       root = chord.root,
       third = chord.third,
@@ -146,9 +142,9 @@ case class SuspendedChord(root: Note, suspension: Suspension, fifth: Note,
         extensions = transposed.drop(2)
       )
 
-object SuspendedChord:
+private object SuspendedChord:
 
-  def sus2(chord: RegularChord): SuspendedChord =
+  def sus2(chord: Triad): SuspendedChord =
     SuspendedChord(
       root = chord.root,
       suspension = Sus2,
@@ -156,7 +152,7 @@ object SuspendedChord:
       extensions = chord.extensions
     )
 
-  def sus4(chord: RegularChord): SuspendedChord =
+  def sus4(chord: Triad): SuspendedChord =
     SuspendedChord(
       root = chord.root,
       suspension = Sus4,
@@ -174,23 +170,14 @@ case class PowerChord(root: Note, fifth: Note) extends Chord:
       PowerChord(transposed(0), transposed(1))
 
 sealed trait ChordQuality
-
 case object MajorChord extends ChordQuality
-
 case object MinorChord extends ChordQuality
-
 case object DiminishedChord extends ChordQuality
-
 case object HalfDiminishedChord extends ChordQuality
-
 case object AugmentedChord extends ChordQuality
-
 case object PerfectChord extends ChordQuality
-
 case object FullyDiminishedChord extends ChordQuality
-
 case object SeventhMajorChord extends ChordQuality
-
 case object SeventhMinorChord extends ChordQuality
 
 sealed  trait QualitySymbol:
@@ -214,12 +201,13 @@ case object HalfDiminishedSymbol extends QualitySymbol:
 case object FullyDiminishedSymbol extends QualitySymbol:
   val symbol = "°7"
 
-case class RegularChord(root: Note, third: Note, fifth: Note,
+//todo extract triad and tetra
+case class Triad(root: Note, third: Note, fifth: Note,
                         extensions: List[Note] = Nil) extends Chord:
   require(
     third.toPitch == root.transposeBy(ThirdMajorInterval).toPitch ||
       third.toPitch == root.transposeBy(ThirdMinorInterval).toPitch,
-    s"RegularChord must contain a major or minor third"
+    s"Triad must contain a major or minor third"
   )
 
   private def seventh: Option[Note] =
@@ -293,17 +281,17 @@ case class RegularChord(root: Note, third: Note, fifth: Note,
     if interval.isInstanceOf[Unison.type] then this
     else
       val transposed = transposeNotes(root :: third :: fifth :: extensions, interval, backwards)
-      RegularChord(transposed(0), transposed(1), transposed(2), transposed.drop(3))
+      Triad(transposed(0), transposed(1), transposed(2), transposed.drop(3))
 
   def toPowerChord = PowerChord(root, fifth)
 
-  def addExtensions(extensions: List[Note]): RegularChord =
+  def addExtensions(extensions: List[Note]): Triad =
     this.copy(extensions = extensions)
 
-  def addExtension(extension: Note): RegularChord =
+  def addExtension(extension: Note): Triad =
     this.copy(extensions = extensions :+ extension)
 
-extension (chord: RegularChord)
+extension (chord: Triad)
   def add2: AddChord = Add(chord, Add2)
   def add4: AddChord = Add(chord, Add4)
   def add6: AddChord = Add(chord, Add6)

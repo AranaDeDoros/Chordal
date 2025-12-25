@@ -5,7 +5,6 @@ import chords.*
 import intervals.*
 
 /* core */
-
 object Pitch:
   val chromatic =
     Vector("C","C#","D","D#","E","F","F#","G","G#","A","A#","B")
@@ -60,7 +59,7 @@ extension (s: String)
       //major on default
       val third = Note(s).transposeBy(ThirdMajorInterval)
       val fifth = Note(s).transposeBy(FifthPerfectInterval)
-      RegularChord(Note(s), Note(s), Note(s))
+      Triad(Note(s), Note(s), Note(s))
     def power: PowerChord = PowerChord(Note(s),
       Note(s).transposeBy(FifthPerfectInterval))
 

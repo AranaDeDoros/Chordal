@@ -5,15 +5,10 @@ package intervals
 sealed trait Quality
 
 case object Unison extends Quality
-
 case object Major extends Quality
-
 case object Minor extends Quality
-
 case object Diminished extends Quality
-
 case object HalfDiminished extends Quality
-
 case object Augmented extends Quality
 
 case object Perfect extends Quality
@@ -108,7 +103,7 @@ case object OctaveInterval extends Interval:
   override def quality: Quality = Perfect
 
 case object Tone:
-  val movement: Int = 2
+  val steps: Int = 2
 
 case object Semitone:
-  val movement: Int = 1
+  val steps: Int = 1
