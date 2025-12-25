@@ -57,7 +57,7 @@ case class AddChord(root: Note, third: Note, fifth: Note, extensions: List[Note]
   override def toString: String =
     val ext = if extensions.isEmpty then ""
     else extensions.map(_.toString).mkString(",", ",", ",")
-    s"($root,$fifth,$addedNote$ext)"
+    s"($root,$third,$fifth,$addedNote$ext)"
 
   override def render: String =
     val ext =
