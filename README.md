@@ -37,8 +37,7 @@ D
 Cadd9
 ```
 ## TODO ##
-1. [ ] Work building progressions
-2. [ ] Print chords with their quality such as C, Cmaj7, Cm, etc.
-3. [x] Represent addN chords.
-4. [ ] Ponder about the validations of the sharpen and flatten ops. 
-5. [ ] Somehow work out enharmonics.
+1. [x] Work building progressions (partial regular triad support)
+2. [x] Print chords with useful names such as C, Cmaj7, Cm, etc. (m,addN, susN work)
+3. [ ] Ponder about the validations of the sharpen and flatten ops. 
+4. [ ] Somehow work out enharmonics.
