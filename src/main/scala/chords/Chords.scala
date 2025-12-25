@@ -1,24 +1,11 @@
 package org.aranadedoros.chordal
 package chords
 
-import notes.{FourthPerfect, Interval, Note, Pitch,
-  SecondMajor, SecondMinor, SeventhMajor, SeventhMinor, SixthMajor,
-  SixthMinor, ThirdMajor, ThirdMinor, Unison}
+import notes.*
 
 import scala.math.floorMod
 
 /* chords */
-
-sealed trait Quality
-
-case object Major extends Quality
-
-case object Minor extends Quality
-
-//case object Diminished extends Quality
-//
-//case object Augmented extends Quality
-
 sealed trait Chord:
   def transposeBy(interval: Interval, backwards: Boolean = false): Chord
   def render : String
@@ -34,19 +21,6 @@ sealed trait Chord:
       }
 
 sealed trait NoThird
-
-sealed trait Suspension:
-  def interval: Interval
-
-case object Sus2 extends Suspension:
-  val interval: Interval = SecondMajor
-
-  override def toString: String = "sus2"
-
-case object Sus4 extends Suspension:
-  val interval: Interval = FourthPerfect
-
-  override def toString: String = "sus4"
 
 sealed trait Add:
   def interval: Interval
@@ -68,7 +42,7 @@ case object Add9 extends Add:
   val interval: Interval = SecondMajor
   override def toString = "add9"
 
-case class AddChord(root: Note, add: Add, fifth: Note, extensions: List[Note] = Nil) extends Chord:
+case class AddChord(root: Note, third: Note, fifth: Note, extensions: List[Note] = Nil, add: Add) extends Chord:
   def addedNote: Note = root.transposeBy(add.interval)
 
   override def toString : String  =
@@ -88,16 +62,17 @@ case class AddChord(root: Note, add: Add, fifth: Note, extensions: List[Note] = 
     else
       val transposed =
         transposeNotes(
-          root :: fifth :: extensions,
+          root :: third :: fifth :: extensions,
           interval,
           backwards
         )
 
       AddChord(
         root = transposed(0),
-        add = add,
-        fifth = transposed(1),
-        extensions = transposed.drop(2)
+        third = transposed(1),
+        fifth = transposed(2),
+        extensions = transposed.drop(3),
+        add = add
       )
 
 object Add:
@@ -116,13 +91,24 @@ object Add:
 
     AddChord(
       root = chord.root,
-      add = add,
+      third = chord.third,
       fifth = chord.fifth,
-      extensions = chord.extensions
+      extensions = chord.extensions,
+      add = add
     )
 
+sealed trait Suspension:
+  def interval: Interval
 
+case object Sus2 extends Suspension:
+  val interval: Interval = SecondMajor
 
+  override def toString: String = "sus2"
+
+case object Sus4 extends Suspension:
+  val interval: Interval = FourthPerfect
+
+  override def toString: String = "sus4"
 
 case class SuspendedChord(root: Note, suspension: Suspension, fifth: Note,
                           extensions: List[Note] = Nil) extends Chord, NoThird:
@@ -156,7 +142,6 @@ case class SuspendedChord(root: Note, suspension: Suspension, fifth: Note,
         extensions = transposed.drop(2)
       )
 
-
 object SuspendedChord:
 
   def sus2(chord: RegularChord): SuspendedChord =
@@ -175,6 +160,14 @@ object SuspendedChord:
       extensions = chord.extensions
     )
 
+case class PowerChord(root: Note, fifth: Note) extends Chord:
+  override def render: String = s"(${root}5)"
+  override def toString: String = s"($root,$fifth)"
+  override def transposeBy(interval: Interval, backwards: Boolean): Chord =
+    if interval.isInstanceOf[Unison.type] then this
+    else
+      val transposed = transposeNotes(List(root, fifth), interval, backwards)
+      PowerChord(transposed(0), transposed(1))
 
 case class RegularChord(root: Note, third: Note, fifth: Note,
                         extensions: List[Note] = Nil) extends Chord:
@@ -229,11 +222,4 @@ extension (chord: RegularChord)
   def sus2: SuspendedChord = SuspendedChord.sus2(chord)
   def sus4: SuspendedChord = SuspendedChord.sus4(chord)
 
-case class PowerChord(root: Note, fifth: Note) extends Chord:
-  override def render: String = s"(${root}5)"
-  override def toString: String = s"($root,$fifth)"
-  override def transposeBy(interval: Interval, backwards: Boolean): Chord =
-    if interval.isInstanceOf[Unison.type] then this
-    else
-      val transposed = transposeNotes(List(root, fifth), interval, backwards)
-      PowerChord(transposed(0), transposed(1))
+
