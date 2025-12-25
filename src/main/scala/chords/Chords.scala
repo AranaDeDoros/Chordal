@@ -3,6 +3,9 @@ package chords
 
 import notes.*
 import intervals.*
+
+import org.aranadedoros.chordal.progressions.RomanDegree
+
 import scala.math.floorMod
 
 /* chords */
@@ -230,7 +233,7 @@ case class Triad(root: Note, third: Note, fifth: Note, extensions: List[Note] = 
 
     val isPerfectFifth    = fifth.toPitch == root.transposeBy(FifthPerfectInterval).toPitch
     val isDiminishedFifth = fifth.toPitch == root.transposeBy(FifthDiminishedInterval).toPitch
-    val isAugmentedFifth  = fifth.toPitch == root.transposeBy(FourthAugmentedInterval).toPitch
+    val isAugmentedFifth  = fifth.toPitch == root.transposeBy(FifthAugmentedInterval).toPitch
 
     (isMajorThird, isMinorThird, isPerfectFifth, isDiminishedFifth, isAugmentedFifth) match
       case (true, false, true, false, false) => MajorChord
@@ -301,6 +304,75 @@ case class Triad(root: Note, third: Note, fifth: Note, extensions: List[Note] = 
 
   def addExtension(extension: Note): Triad =
     this.copy(extensions = extensions :+ extension)
+
+object Triad:
+  def major(root: Note): Triad =
+    Triad(
+      root,
+      root.transposeBy(ThirdMajorInterval),
+      root.transposeBy(FifthPerfectInterval)
+    )
+
+  def minor(root: Note): Triad =
+    Triad(
+      root,
+      root.transposeBy(ThirdMinorInterval),
+      root.transposeBy(FifthPerfectInterval)
+    )
+
+  def diminished(root: Note): Triad =
+    Triad(
+      root,
+      root.transposeBy(ThirdMinorInterval),
+      root.transposeBy(FifthDiminishedInterval)
+    )
+
+  def augmented(root: Note): Triad =
+    Triad(
+      root,
+      root.transposeBy(ThirdMajorInterval),
+      root.transposeBy(FourthAugmentedInterval)
+    )
+
+  def fromDegree(root: Note, degree: RomanDegree): Triad =
+    val degreeRoot =
+      root.transposeBy(
+        Interval.fromDiatonicSteps(degree.diatonicSteps)
+      )
+
+    degree.quality match
+      case MajorChord =>
+        Triad(
+          degreeRoot,
+          degreeRoot.transposeBy(ThirdMajorInterval),
+          degreeRoot.transposeBy(FifthPerfectInterval)
+        )
+
+      case MinorChord =>
+        Triad(
+          degreeRoot,
+          degreeRoot.transposeBy(ThirdMinorInterval),
+          degreeRoot.transposeBy(FifthPerfectInterval)
+        )
+
+      case DiminishedChord =>
+        Triad(
+          degreeRoot,
+          degreeRoot.transposeBy(ThirdMinorInterval),
+          degreeRoot.transposeBy(FifthDiminishedInterval)
+        )
+
+      case AugmentedChord =>
+        Triad(
+          degreeRoot,
+          degreeRoot.transposeBy(ThirdMajorInterval),
+          degreeRoot.transposeBy(SixthMinorInterval)
+        )
+
+      case _ =>
+        throw new IllegalStateException(
+          s"Unsupported triad quality for degree $degree"
+        )
 
 extension (chord: Triad)
   def add2: AddChord       = Add(chord, Add2)

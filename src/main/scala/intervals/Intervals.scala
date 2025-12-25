@@ -72,6 +72,12 @@ case object FifthPerfectInterval extends Interval:
   override def readAs: String     = "5"
   override def quality: Quality   = Perfect
 
+case object FifthAugmentedInterval extends Interval:
+  override def semitones: Int     = 8
+  override def diatonicSteps: Int = 4
+  override def readAs: String     = "#5"
+  override def quality: Quality   = Augmented
+
 case object SixthMinorInterval extends Interval:
   override def semitones: Int     = 8
   override def diatonicSteps: Int = 5
@@ -107,3 +113,18 @@ case object Tone:
 
 case object Semitone:
   val steps: Int = 1
+
+object Interval:
+  def fromDiatonicSteps(steps: Int): Interval =
+    steps match
+      case 0 => UnisonInterval
+      case 1 => SecondMajorInterval
+      case 2 => ThirdMajorInterval
+      case 3 => FourthPerfectInterval
+      case 4 => FifthPerfectInterval
+      case 5 => SixthMajorInterval
+      case 6 => SeventhMajorInterval
+      case _ =>
+        throw new IllegalArgumentException(
+          s"Invalid diatonic step: $steps"
+        )
