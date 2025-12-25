@@ -8,17 +8,22 @@ import scala.math.floorMod
 /* chords */
 sealed trait Chord:
   def transposeBy(interval: Interval, backwards: Boolean = false): Chord
-  /**
-   * method to print a core triad quality chord
-    * @return A chord representation with its quality. e.g. Cm, C
-   */
-  def render : String
-  protected def transposeNotes(notes: List[Note], interval: Interval, backwards: Boolean): List[Note] =
+
+  /** method to print a core triad quality chord
+    * @return
+    *   A chord representation with its quality. e.g. Cm, C
+    */
+  def render: String
+  protected def transposeNotes(
+      notes: List[Note],
+      interval: Interval,
+      backwards: Boolean
+  ): List[Note] =
     if interval.isInstanceOf[Unison.type] then notes
     else
       val semitoneToMove = if backwards then -interval.semitones else interval.semitones
       notes.map { n =>
-        val idx = Pitch.chromatic.indexOf(n.toPitch)
+        val idx      = Pitch.chromatic.indexOf(n.toPitch)
         val movement = floorMod(idx + semitoneToMove, Pitch.chromatic.length)
         Note(Pitch.chromatic(movement))
       }
@@ -31,37 +36,37 @@ sealed trait Add:
 
 case object Add2 extends Add:
   val interval: Interval = SecondMajorInterval
-  override def toString = "add2"
+  override def toString  = "add2"
 
 case object Add4 extends Add:
   val interval: Interval = FourthPerfectInterval
-  override def toString = "add4"
+  override def toString  = "add4"
 
 case object Add6 extends Add:
   val interval: Interval = SixthMajorInterval
-  override def toString = "add6"
+  override def toString  = "add6"
 
 case object Add9 extends Add:
   val interval: Interval = SecondMajorInterval
-  override def toString = "add9"
+  override def toString  = "add9"
 
-case class AddChord(root: Note, third: Note, fifth: Note,
-                    extensions: List[Note] = Nil, add: Add) extends Chord:
+case class AddChord(root: Note, third: Note, fifth: Note, extensions: List[Note] = Nil, add: Add)
+    extends Chord:
   def addedNote: Note = root.transposeBy(add.interval)
 
-  override def toString : String  =
+  override def toString: String =
     val ext = if extensions.isEmpty then ""
-    else extensions.map(_.toString).mkString(",",",",",")
-      s"($root,$fifth,$addedNote$ext)"
+    else extensions.map(_.toString).mkString(",", ",", ",")
+    s"($root,$fifth,$addedNote$ext)"
 
   override def render: String =
     val ext =
       if extensions.isEmpty then ""
-      else extensions.map(_.toString).mkString("(",",",")")
+      else extensions.map(_.toString).mkString("(", ",", ")")
 
     s"$root$add$ext"
 
-  override def transposeBy(interval: Interval, backwards: Boolean = false): Chord =
+  override def transposeBy(interval: Interval, backwards: Boolean = false): AddChord =
     if interval.isInstanceOf[Unison.type] then this
     else
       val transposed =
@@ -79,13 +84,13 @@ case class AddChord(root: Note, third: Note, fifth: Note,
       )
 
 object Add:
-  def apply(chord: Triad, add: Add): AddChord  =
+  def apply(chord: Triad, add: Add): AddChord =
     require(
       chord.extensions.forall { _ =>
         val seventhMajor = chord.root.transposeBy(SeventhMajorInterval)
         val seventhMinor = chord.root.transposeBy(SeventhMinorInterval)
         chord.third.toPitch != seventhMajor.toPitch &&
-          chord.third.toPitch != seventhMinor.toPitch
+        chord.third.toPitch != seventhMinor.toPitch
       },
       "Add chords cannot contain sevenths"
     )
@@ -110,22 +115,26 @@ case object Sus4 extends Suspension:
 
   override def toString: String = "sus4"
 
-case class SuspendedChord(root: Note, suspension: Suspension, fifth: Note,
-                          extensions: List[Note] = Nil) extends Chord, NoThird:
+case class SuspendedChord(
+    root: Note,
+    suspension: Suspension,
+    fifth: Note,
+    extensions: List[Note] = Nil
+) extends Chord, NoThird:
   def suspendedNote: Note = root.transposeBy(suspension.interval)
 
   override def toString: String =
     val ext = if extensions.isEmpty then ""
-    else extensions.map(_.toString).mkString("",",",",")
+    else extensions.map(_.toString).mkString("", ",", ",")
     s"($root,$suspendedNote,$fifth$ext)"
 
   override def render: String =
     val ext =
       if extensions.isEmpty then ""
-      else extensions.map(_.toString).mkString("(",",",")")
+      else extensions.map(_.toString).mkString("(", ",", ")")
     s"$root$suspension$ext"
 
-  override def transposeBy(interval: Interval, backwards: Boolean = false): Chord =
+  override def transposeBy(interval: Interval, backwards: Boolean = false): SuspendedChord =
     if interval.isInstanceOf[Unison.type] then this
     else
       val transposed =
@@ -161,37 +170,37 @@ private object SuspendedChord:
     )
 
 case class PowerChord(root: Note, fifth: Note) extends Chord:
-  override def render: String = s"(${root}5)"
+  override def render: String   = s"(${root}5)"
   override def toString: String = s"($root,$fifth)"
-  override def transposeBy(interval: Interval, backwards: Boolean): Chord =
+  override def transposeBy(interval: Interval, backwards: Boolean): PowerChord =
     if interval.isInstanceOf[Unison.type] then this
     else
       val transposed = transposeNotes(List(root, fifth), interval, backwards)
       PowerChord(transposed(0), transposed(1))
 
 sealed trait ChordQuality
-case object MajorChord extends ChordQuality
-case object MinorChord extends ChordQuality
-case object DiminishedChord extends ChordQuality
-case object HalfDiminishedChord extends ChordQuality
-case object AugmentedChord extends ChordQuality
-case object PerfectChord extends ChordQuality
+case object MajorChord           extends ChordQuality
+case object MinorChord           extends ChordQuality
+case object DiminishedChord      extends ChordQuality
+case object HalfDiminishedChord  extends ChordQuality
+case object AugmentedChord       extends ChordQuality
+case object PerfectChord         extends ChordQuality
 case object FullyDiminishedChord extends ChordQuality
-case object SeventhMajorChord extends ChordQuality
-case object SeventhMinorChord extends ChordQuality
+case object SeventhMajorChord    extends ChordQuality
+case object SeventhMinorChord    extends ChordQuality
 
-sealed  trait QualitySymbol:
-  val symbol : String
+sealed trait QualitySymbol:
+  val symbol: String
 case object NoSymbol extends QualitySymbol:
   val symbol: String = ""
 case object MajorSymbol extends QualitySymbol:
-  val symbol : String = NoSymbol.symbol
+  val symbol: String = NoSymbol.symbol
 case object MinorSymbol extends QualitySymbol:
-  val symbol : String = "m"
+  val symbol: String = "m"
 case object DiminishedSymbol extends QualitySymbol:
-  val symbol : String = "°"
+  val symbol: String = "°"
 case object AugmentedSymbol extends QualitySymbol:
-  val symbol : String = "aug"
+  val symbol: String = "aug"
 case object SeventhMajorSymbol extends QualitySymbol:
   val symbol = "maj7"
 case object SeventhMinorSymbol extends QualitySymbol:
@@ -202,8 +211,7 @@ case object FullyDiminishedSymbol extends QualitySymbol:
   val symbol = "°7"
 
 //todo extract triad and tetra
-case class Triad(root: Note, third: Note, fifth: Note,
-                        extensions: List[Note] = Nil) extends Chord:
+case class Triad(root: Note, third: Note, fifth: Note, extensions: List[Note] = Nil) extends Chord:
   require(
     third.toPitch == root.transposeBy(ThirdMajorInterval).toPitch ||
       third.toPitch == root.transposeBy(ThirdMinorInterval).toPitch,
@@ -213,16 +221,16 @@ case class Triad(root: Note, third: Note, fifth: Note,
   private def seventh: Option[Note] =
     extensions.find { n =>
       n.toPitch == root.transposeBy(SeventhMajorInterval).toPitch ||
-        n.toPitch == root.transposeBy(SeventhMinorInterval).toPitch
+      n.toPitch == root.transposeBy(SeventhMinorInterval).toPitch
     }
 
   private def triadQuality: ChordQuality =
     val isMajorThird = third.toPitch == root.transposeBy(ThirdMajorInterval).toPitch
     val isMinorThird = third.toPitch == root.transposeBy(ThirdMinorInterval).toPitch
 
-    val isPerfectFifth = fifth.toPitch == root.transposeBy(FifthPerfectInterval).toPitch
+    val isPerfectFifth    = fifth.toPitch == root.transposeBy(FifthPerfectInterval).toPitch
     val isDiminishedFifth = fifth.toPitch == root.transposeBy(FifthDiminishedInterval).toPitch
-    val isAugmentedFifth = fifth.toPitch == root.transposeBy(FourthAugmentedInterval).toPitch
+    val isAugmentedFifth  = fifth.toPitch == root.transposeBy(FourthAugmentedInterval).toPitch
 
     (isMajorThird, isMinorThird, isPerfectFifth, isDiminishedFifth, isAugmentedFifth) match
       case (true, false, true, false, false) => MajorChord
@@ -236,16 +244,16 @@ case class Triad(root: Note, third: Note, fifth: Note,
 
   private def extendedQuality: ChordQuality =
     val triad = triadQuality
-    val sev = seventh.get
+    val sev   = seventh.get
 
     val isMajorSeventh = sev.toPitch == root.transposeBy(SeventhMajorInterval).toPitch
     val isMinorSeventh = sev.toPitch == root.transposeBy(SeventhMinorInterval).toPitch
 
     (triad, isMajorSeventh, isMinorSeventh) match
-      case (MajorChord, true, false) => SeventhMajorChord // maj7
-      case (MajorChord, false, true) => SeventhMinorChord // 7
-      case (MinorChord, false, true) => SeventhMinorChord // m7
-      case (DiminishedChord, false, true) => HalfDiminishedChord // ø7
+      case (MajorChord, true, false)      => SeventhMajorChord    // maj7
+      case (MajorChord, false, true)      => SeventhMinorChord    // 7
+      case (MinorChord, false, true)      => SeventhMinorChord    // m7
+      case (DiminishedChord, false, true) => HalfDiminishedChord  // ø7
       case (DiminishedChord, true, false) => FullyDiminishedChord // °7
       case _ =>
         throw new IllegalStateException(
@@ -253,11 +261,14 @@ case class Triad(root: Note, third: Note, fifth: Note,
         )
 
   def quality: ChordQuality =
-      if seventh.isDefined then extendedQuality
-      else triadQuality
+    if seventh.isDefined then extendedQuality
+    else triadQuality
 
-  override def toString : String = s"($root,$third,$fifth${if (extensions.nonEmpty)
-    s",${extensions.mkString(",")}" else ""})"
+  override def toString: String = s"($root,$third,$fifth${
+      if (extensions.nonEmpty)
+        s",${extensions.mkString(",")}"
+      else ""
+    })"
 
   override def render: String =
     val exts =
@@ -265,19 +276,19 @@ case class Triad(root: Note, third: Note, fifth: Note,
       else extensions.map(_.toString).mkString(",")
 
     s"$root${
-      quality match
-        case MajorChord => MajorSymbol.symbol
-        case MinorChord => MinorSymbol.symbol
-        case DiminishedChord => DiminishedSymbol.symbol
-        case AugmentedChord => AugmentedSymbol.symbol
-        case SeventhMajorChord      => SeventhMajorSymbol.symbol
-        case SeventhMinorChord      => SeventhMinorSymbol.symbol
-        case HalfDiminishedChord    => HalfDiminishedSymbol.symbol
-        case FullyDiminishedChord   => FullyDiminishedSymbol.symbol
-        case PerfectChord => NoSymbol.symbol
-    }$exts"
+        quality match
+          case MajorChord           => MajorSymbol.symbol
+          case MinorChord           => MinorSymbol.symbol
+          case DiminishedChord      => DiminishedSymbol.symbol
+          case AugmentedChord       => AugmentedSymbol.symbol
+          case SeventhMajorChord    => SeventhMajorSymbol.symbol
+          case SeventhMinorChord    => SeventhMinorSymbol.symbol
+          case HalfDiminishedChord  => HalfDiminishedSymbol.symbol
+          case FullyDiminishedChord => FullyDiminishedSymbol.symbol
+          case PerfectChord         => NoSymbol.symbol
+      }$exts"
 
-  override def transposeBy(interval: Interval, backwards: Boolean): Chord =
+  override def transposeBy(interval: Interval, backwards: Boolean): Triad =
     if interval.isInstanceOf[Unison.type] then this
     else
       val transposed = transposeNotes(root :: third :: fifth :: extensions, interval, backwards)
@@ -292,11 +303,9 @@ case class Triad(root: Note, third: Note, fifth: Note,
     this.copy(extensions = extensions :+ extension)
 
 extension (chord: Triad)
-  def add2: AddChord = Add(chord, Add2)
-  def add4: AddChord = Add(chord, Add4)
-  def add6: AddChord = Add(chord, Add6)
-  def add9: AddChord = Add(chord, Add9)
+  def add2: AddChord       = Add(chord, Add2)
+  def add4: AddChord       = Add(chord, Add4)
+  def add6: AddChord       = Add(chord, Add6)
+  def add9: AddChord       = Add(chord, Add9)
   def sus2: SuspendedChord = SuspendedChord.sus2(chord)
   def sus4: SuspendedChord = SuspendedChord.sus4(chord)
-
-
