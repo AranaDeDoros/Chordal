@@ -7,16 +7,16 @@ Work with Notes to create Chords and then use those same Chords to create Progre
 ```scala
 // let's create a C chord from scratch
 val root = "C".note
-val third = root.transposeBy(ThirdMajor)
-val fifth = root.transposeBy(FifthPerfect)
+val third = root.transposeBy(ThirdMajorInterval)
+val fifth = root.transposeBy(FifthPerfectInterval)
 // let's create the chord
-val chord = RegularChord(root, third, fifth)
+val chord = Triad(root, third, fifth)
 println(chord)
 // but we're playing rock, let's drop that third and gets us a
 val powerChord = chord.toPowerChord
 println(powerChord)
 // let's add a seventh
-val seventhMinor = root.transposeBy(SeventhMinor)
+val seventhMinor = root.transposeBy(SeventhMinorInterval)
 val seventhDom = chord.addExtension(seventhMinor)
 println(s"$seventhDom") //will find out how to work with enharmonics later
 val susChord = chord.sus2
