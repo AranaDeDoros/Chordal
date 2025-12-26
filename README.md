@@ -23,8 +23,8 @@ Work with Notes to create Chords and then use those same Chords to create Progre
 ```scala
 // let's create a C chord from scratch
 val root  = "C".note
-val third = root.transposeBy(ThirdMajorInterval)
-val fifth = root.transposeBy(FifthPerfectInterval)
+val third = root.transposeDiatonically(ThirdMajorInterval)
+val fifth = root.transposeDiatonically(FifthPerfectInterval)
 // let's create the chord
 val chord = Triad(root, MajorChord)
 println(chord)
@@ -41,8 +41,8 @@ println(addChord)
 println(addChord.addedNote)
 println(addChord.render)
 val cRoot      = "C".note
-val thirdM     = root.transposeBy(ThirdMinorInterval)
-val fifthP     = root.transposeBy(FifthPerfectInterval)
+val thirdM     = root.transposeDiatonically(ThirdMinorInterval)
+val fifthP     = root.transposeDiatonically(FifthPerfectInterval)
 val minorChord = Triad(cRoot, MinorChord)
 val add2       = minorChord.add2
 println(add2)
@@ -80,3 +80,4 @@ C#
 4. [x] Somehow work out enharmonics.
 5. [ ] Model tetrachords better.
 6. [ ] Print chord intervalic formulas.
+7. [ ] Improve syntax to read like english.
