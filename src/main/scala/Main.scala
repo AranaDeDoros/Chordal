@@ -1,6 +1,6 @@
 package org.aranadedoros.chordal
 
-import notes.{note, sharpen}
+import notes.{note, sharpenChromatic}
 import intervals.*
 import chords.*
 import progressions.*
@@ -10,8 +10,8 @@ object Main:
   def main(args: Array[String]): Unit =
     // let's create a C chord from scratch
     val root  = "C".note
-    val third = root.transposeBy(ThirdMajorInterval)
-    val fifth = root.transposeBy(FifthPerfectInterval)
+    val third = root.transposeDiatonically(ThirdMajorInterval)
+    val fifth = root.transposeDiatonically(FifthPerfectInterval)
     // let's create the chord
     val chord = Triad(root, MajorChord)
     println(chord)
@@ -28,8 +28,8 @@ object Main:
     println(addChord.addedNote)
     println(addChord.render)
     val cRoot      = "C".note
-    val thirdM     = root.transposeBy(ThirdMinorInterval)
-    val fifthP     = root.transposeBy(FifthPerfectInterval)
+    val thirdM     = root.transposeDiatonically(ThirdMinorInterval)
+    val fifthP     = root.transposeDiatonically(FifthPerfectInterval)
     val minorChord = Triad(cRoot, MinorChord)
     val add2       = minorChord.add2
     println(add2)
@@ -42,4 +42,4 @@ object Main:
     val seventhMajor = Triad("C".note, SeventhMajorChord)
     println(seventhMajor.render)
     println("C#".note.toPitch)
-    println("C".note.sharpen)
+    println("C".note.sharpenChromatic)

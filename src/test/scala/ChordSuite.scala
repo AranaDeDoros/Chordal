@@ -11,8 +11,8 @@ class ChordSuite extends FunSuite:
 
   test("create a C major triad") {
     val root  = "C".note
-    val third = root.transposeBy(ThirdMajorInterval)
-    val fifth = root.transposeBy(FifthPerfectInterval)
+    val third = root.transposeDiatonically(ThirdMajorInterval)
+    val fifth = root.transposeDiatonically(FifthPerfectInterval)
 
     val chord = Triad(root, MajorChord)
 
@@ -41,11 +41,19 @@ class ChordSuite extends FunSuite:
       SeventhMinorChord
     )
 
-    val seventh  = root.transposeBy(SeventhMinorInterval)
+    val seventh = root.transposeDiatonically(SeventhMinorInterval)
+    println(chord)
     val extended = chord.addExtension(FlatNinth)
-
+    println(extended.extensionNotes)
     assertEquals(extended.extensions.size, 1)
-    assertEquals(extended.extensions.head.toString, "Db") // will change once enharmonics are added
+    val extensionFound = extended.extensionNotes.find(
+      p => p.toString == "Db"
+    )
+    val ninthFound = extensionFound match
+      case Some(n) => true
+      case None    => false
+    assert(ninthFound, "ninth was found")
+
   }
 
   test("sus2 replaces the third with a second") {

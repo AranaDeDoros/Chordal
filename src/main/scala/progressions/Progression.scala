@@ -19,32 +19,32 @@ enum RomanDegree(
 object Progression:
   /** ii–V–I (Jazz) */
   def jazz(chord: Triad): Progression =
-    val ii = Triad.minor(chord.root.transposeBy(SecondMajorInterval))
-    val V  = Triad.major(chord.root.transposeBy(FourthPerfectInterval))
+    val ii = Triad.minor(chord.root.transposeDiatonically(SecondMajorInterval))
+    val V  = Triad.major(chord.root.transposeDiatonically(FourthPerfectInterval))
     val I  = chord
     Progression(List(ii, V, I))
 
   /** I–V–vi–IV (Pop / Rock) */
   def pop(chord: Triad): Progression =
     val I  = chord
-    val V  = Triad.major(chord.root.transposeBy(FifthPerfectInterval))
-    val vi = Triad.minor(chord.root.transposeBy(SixthMajorInterval))
-    val IV = Triad.major(chord.root.transposeBy(FourthPerfectInterval))
+    val V  = Triad.major(chord.root.transposeDiatonically(FifthPerfectInterval))
+    val vi = Triad.minor(chord.root.transposeDiatonically(SixthMajorInterval))
+    val IV = Triad.major(chord.root.transposeDiatonically(FourthPerfectInterval))
     Progression(List(I, V, vi, IV))
 
   /** I–IV–V (Blues) */
   def blues(chord: Triad): Progression =
     val I  = chord
-    val IV = Triad.major(chord.root.transposeBy(FourthPerfectInterval))
-    val V  = Triad.major(chord.root.transposeBy(FifthPerfectInterval))
+    val IV = Triad.major(chord.root.transposeDiatonically(FourthPerfectInterval))
+    val V  = Triad.major(chord.root.transposeDiatonically(FifthPerfectInterval))
     Progression(List(I, IV, V))
 
   /** vi–IV–I–V (Ballad / Pop alt) */
   def ballad(chord: Triad): Progression =
-    val vi = Triad.minor(chord.root.transposeBy(SixthMajorInterval))
-    val IV = Triad.major(chord.root.transposeBy(FourthPerfectInterval))
+    val vi = Triad.minor(chord.root.transposeDiatonically(SixthMajorInterval))
+    val IV = Triad.major(chord.root.transposeDiatonically(FourthPerfectInterval))
     val I  = chord
-    val V  = Triad.major(chord.root.transposeBy(FifthPerfectInterval))
+    val V  = Triad.major(chord.root.transposeDiatonically(FifthPerfectInterval))
     Progression(List(vi, IV, I, V))
 
   def fromDegrees(

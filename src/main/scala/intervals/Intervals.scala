@@ -10,8 +10,9 @@ case object Minor          extends Quality
 case object Diminished     extends Quality
 case object HalfDiminished extends Quality
 case object Augmented      extends Quality
+case object Perfect        extends Quality
 
-case object Perfect extends Quality
+//will refactor this
 sealed trait Interval:
   def semitones: Int
   def diatonicSteps: Int
