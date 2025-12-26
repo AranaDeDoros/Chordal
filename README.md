@@ -1,7 +1,9 @@
 # Chordal #
 
-Another WIP DSL experiment. A DSL to represent music elements.
-Work with Notes to create Chords and then use those same Chords to create Progressions.
+<img width="800" height="533" alt="chordallogo" src="https://github.com/user-attachments/assets/fc0c7cb3-bdc3-48aa-a149-e318278edd76" />
+
+
+Another WIP DSL experiment to represent music elements. Work with Notes to create Chords and then use those same Chords to create Progressions.
 
 ### Features ###
  - Working enharmonics.
@@ -19,7 +21,12 @@ Work with Notes to create Chords and then use those same Chords to create Progre
      - Generic list-like implementation.
      - Quick default methods to create common progressions.
 
-### Usage ###
+## Usage ##
+### DSL
+```scala
+//on progress
+```
+### Procedural
 ```scala
 // let's create a C chord from scratch
 val root  = "C".note
