@@ -18,7 +18,7 @@ enum RomanDegree(
 /* progression */
 object Progression:
   /** ii–V–I (Jazz) */
-  def toJazz(chord: Triad): Progression =
+  def jazz(chord: Triad): Progression =
     val ii = Triad.minor(chord.root.transposeBy(SecondMajorInterval))
     val V  = Triad.major(chord.root.transposeBy(FourthPerfectInterval))
     val I  = chord
@@ -81,7 +81,7 @@ case class Progression(chords: List[Chord]):
     chords.mkString("(", ",", ")")
 
 extension (c: Triad)
-  def toJazz: Progression = Progression.toJazz(c)
+  def jazz: Progression   = Progression.jazz(c)
   def pop: Progression    = Progression.pop(c)
   def blues: Progression  = Progression.blues(c)
   def ballad: Progression = Progression.ballad(c)

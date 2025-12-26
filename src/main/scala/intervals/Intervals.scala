@@ -108,6 +108,18 @@ case object OctaveInterval extends Interval:
   override def readAs: String     = "8"
   override def quality: Quality   = Perfect
 
+case object ChromaticUp extends Interval:
+  override def semitones        = 1
+  override def diatonicSteps    = 0
+  override def readAs           = "#"
+  override def quality: Quality = Augmented
+
+case object ChromaticDown extends Interval:
+  override def semitones        = -1
+  override def diatonicSteps    = 0
+  override def readAs           = "b"
+  override def quality: Quality = Diminished
+
 case object Tone:
   val steps: Int = 2
 

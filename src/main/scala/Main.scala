@@ -39,3 +39,5 @@ object Main:
     println(pop)
     val cmaj7 = c.addExtension("B".note)
     println(cmaj7.render) // Cmaj7B <- wip
+    println("C#")
+    println("C#".note.toPitch)
