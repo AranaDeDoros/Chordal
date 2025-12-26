@@ -5,8 +5,8 @@ import chords.*
 import intervals.*
 
 enum RomanDegree(
-    val diatonicSteps: Int,
-    val quality: ChordQuality
+  val diatonicSteps: Int,
+  val quality: ChordQuality
 ):
   case I      extends RomanDegree(0, MajorChord)
   case ii     extends RomanDegree(1, MinorChord)
@@ -48,19 +48,22 @@ object Progression:
     Progression(List(vi, IV, I, V))
 
   def fromDegrees(
-      tonic: Triad,
-      degrees: RomanDegree*
+    tonic: Triad,
+    degrees: RomanDegree*
   ): Progression =
     val chords =
-      degrees.toList.map { degree =>
-        Triad.fromDegree(tonic.root, degree)
+      degrees.toList.map {
+        degree =>
+          Triad.fromDegree(tonic.root, degree)
       }
     Progression(chords)
 
 case class Progression(chords: List[Chord]):
 
   def has(chord: Chord): Option[Chord] =
-    chords.find(c => c == chord)
+    chords.find(
+      c => c == chord
+    )
 
   def ++(progression: Progression): List[Chord] =
     chords ++ progression.chords

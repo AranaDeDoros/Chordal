@@ -121,14 +121,24 @@ object Note:
 
 extension (s: String)
   def note: Note = Note(s)
-  def chord: Chord =
-    // major on default
-    val root  = Note(s)
-    val third = root.transposeBy(ThirdMajorInterval)
-    val fifth = root.transposeBy(FifthPerfectInterval)
-    Triad(root, third, fifth)
-  def power: PowerChord = PowerChord(Note(s), Note(s).transposeBy(FifthPerfectInterval))
+  def major: Chord =
+    val root = Note(s)
+    Triad(root, MajorChord)
+  def minor: Chord =
+    val root = Note(s)
+    Triad(root, MinorChord)
+  def power: PowerChord = PowerChord(Note(s))
   def sharpen: Note =
     s.note.transposeBy(ChromaticUp)
   def flatten: Note =
     s.note.transposeBy(ChromaticDown)
+
+extension (n: Note)
+  def sharpen: Note =
+    n.transposeBy(ChromaticUp)
+  def flatten: Note =
+    n.transposeBy(ChromaticDown)
+  def major: Triad =
+    Triad(n, MajorChord)
+  def minor: Triad =
+    Triad(n, MinorChord)
