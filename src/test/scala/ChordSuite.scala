@@ -1,9 +1,11 @@
 package org.aranadedoros.chordal
 
-import munit.FunSuite
-import notes.*
-import intervals.*
 import chords.*
+import extensions.FlatNinth
+import intervals.*
+import notes.*
+
+import munit.FunSuite
 
 class ChordSuite extends FunSuite:
 
@@ -12,7 +14,7 @@ class ChordSuite extends FunSuite:
     val third = root.transposeBy(ThirdMajorInterval)
     val fifth = root.transposeBy(FifthPerfectInterval)
 
-    val chord = Triad(root, third, fifth)
+    val chord = Triad(root, MajorChord)
 
     assertEquals(chord.root.toString, "C")
     assertEquals(chord.third.toString, "E")
@@ -23,8 +25,7 @@ class ChordSuite extends FunSuite:
     val root = "C".note
     val chord = Triad(
       root,
-      root.transposeBy(ThirdMajorInterval),
-      root.transposeBy(FifthPerfectInterval)
+      MajorChord
     )
 
     val power = chord.toPowerChord
@@ -37,23 +38,21 @@ class ChordSuite extends FunSuite:
     val root = "C".note
     val chord = Triad(
       root,
-      root.transposeBy(ThirdMajorInterval),
-      root.transposeBy(FifthPerfectInterval)
+      SeventhMinorChord
     )
 
     val seventh  = root.transposeBy(SeventhMinorInterval)
-    val extended = chord.addExtension(seventh)
+    val extended = chord.addExtension(FlatNinth)
 
     assertEquals(extended.extensions.size, 1)
-    assertEquals(extended.extensions.head.toString, "A#") // will change once enharmonics are added
+    assertEquals(extended.extensions.head.toString, "Db") // will change once enharmonics are added
   }
 
   test("sus2 replaces the third with a second") {
     val root = "C".note
     val chord = Triad(
       root,
-      root.transposeBy(ThirdMajorInterval),
-      root.transposeBy(FifthPerfectInterval)
+      MajorChord
     )
 
     val sus = chord.sus2
@@ -66,8 +65,7 @@ class ChordSuite extends FunSuite:
     val root = "C".note
     val chord = Triad(
       root,
-      root.transposeBy(ThirdMajorInterval),
-      root.transposeBy(FifthPerfectInterval)
+      MajorChord
     )
 
     val add = chord.add9
@@ -80,8 +78,7 @@ class ChordSuite extends FunSuite:
     val root = "C".note
     val chord = Triad(
       root,
-      root.transposeBy(ThirdMajorInterval),
-      root.transposeBy(FifthPerfectInterval)
+      MajorChord
     )
 
     val dChord = chord.transposeBy(SecondMajorInterval)
