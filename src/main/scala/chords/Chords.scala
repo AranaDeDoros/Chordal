@@ -8,6 +8,12 @@ import scala.math.floorMod
 import extensions.*
 
 /* chords */
+private def isValidExtension(ext: Extension): Boolean =
+  ext match
+    case Ninth | FlatNinth | Eleventh |
+        SharpEleventh | Thirteenth => true
+    case _ => false
+
 sealed trait Chord:
   def transposeBy(interval: Interval, backwards: Boolean = false): Chord
 
@@ -32,7 +38,6 @@ sealed trait Chord:
       }
 
 sealed trait NoThird
-
 sealed trait Add:
   def interval: Interval
   override def toString: String
@@ -113,6 +118,11 @@ case class SuspendedChord(
   def fifth: Note =
     root.transposeDiatonically(FifthPerfectInterval)
 
+  def extensionNotes: List[Note] =
+    extensions.map(
+      e => root.transposeDiatonically(e.interval)
+    )
+
   override def toString: String =
     val ext = if extensions.isEmpty then ""
     else extensions.map(_.toString).mkString("", ",", ",")
@@ -127,8 +137,15 @@ case class SuspendedChord(
   override def transposeBy(interval: Interval, backwards: Boolean = false): SuspendedChord =
     this.copy(root = root.transposeDiatonically(interval, backwards))
 
-private object SuspendedChord:
+  def addExtensions(exts: List[Extension]): SuspendedChord =
+    require(exts.forall(isValidExtension), s"Invalid extensions: $exts")
+    copy(extensions = exts)
 
+  def addExtension(ext: Extension): SuspendedChord =
+    require(isValidExtension(ext), s"Invalid extension: $ext")
+    copy(extensions = extensions :+ ext)
+
+object SuspendedChord:
   def sus2(chord: Triad): SuspendedChord =
     SuspendedChord(
       root = chord.root,
@@ -246,11 +263,6 @@ case class Triad(root: Note, quality: ChordQuality, extensions: List[Extension] 
       this.copy(root = root.transposeDiatonically(interval, backwards))
 
   def toPowerChord = PowerChord(root)
-
-  private def isValidExtension(ext: Extension): Boolean =
-    ext match
-      case Ninth | FlatNinth | Eleventh | SharpEleventh | Thirteenth => true
-      case _                                                         => false
 
   def addExtensions(exts: List[Extension]): Triad =
     require(exts.forall(isValidExtension), s"Invalid extensions: $exts")

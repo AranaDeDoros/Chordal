@@ -24,7 +24,30 @@ Another WIP DSL experiment to represent music elements. Work with Notes to creat
 ## Usage ##
 ### DSL
 ```scala
-//on progress
+//on progress, subject to changes
+val C = "C".note
+val chordDesc = chord {
+  root(C)
+  quality(MajorChord)
+  withExtensions(Ninth)
+}
+val chordObj = ChordInterpreter.interpret(chordDesc)
+println(chordObj.render)
+println(chordObj.toString)
+
+val add2Desc = Add.chord {
+  root(C)
+  addedNote(Add2)
+}
+val add2Obj = AddedChordInterpreter.interpret(add2Desc)
+println(add2Obj.render)
+println(add2Obj.toString)
+```
+```text
+C9
+(C,E,G,D)
+Cadd2
+(C,D)
 ```
 ### Procedural
 ```scala
