@@ -4,8 +4,9 @@ import chords.*
 import dsl.*
 import extensions.Ninth
 import interpreter.RegularChord.chord
-import interpreter.{Add, AddedChordInterpreter, ChordInterpreter}
+import interpreter.Add.add
 import notes.note
+import interpreter.{AddedChordInterpreter, ChordInterpreter}
 
 object Main:
   def main(args: Array[String]): Unit =
@@ -19,7 +20,7 @@ object Main:
     println(chordObj.render)
     println(chordObj.toString)
 
-    val add2Desc = Add.chord {
+    val add2Desc = add {
       root(C)
       addedNote(Add2)
     }

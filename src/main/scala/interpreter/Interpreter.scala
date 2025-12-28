@@ -19,7 +19,7 @@ object ChordInterpreter:
     Triad(desc.root, desc.quality).addExtensions(desc.extensions)
 
 object Suspended:
-  def chord(body: SuspendedChordSpec ?=> Unit): SuspendedChordDescription =
+  def sus(body: SuspendedChordSpec ?=> Unit): SuspendedChordDescription =
     given spec: SuspendedChordSpec = new SuspendedChordSpec
     body
     SuspendedChordDescription(
@@ -37,7 +37,7 @@ object SuspendedChordInterpreter:
     SuspendedChord(root = desc.root, suspension = desc.suspension, extensions = Nil)
 
 object Add:
-  def chord(body: AddedChordSpec ?=> Unit): AddedChordDescription =
+  def add(body: AddedChordSpec ?=> Unit): AddedChordDescription =
     given spec: AddedChordSpec = new AddedChordSpec
     body
     AddedChordDescription(
@@ -55,7 +55,7 @@ object AddedChordInterpreter:
     AddChord(root = desc.root, add = desc.addedNote)
 
 object Power:
-  def chord(body: PowerChordSpec ?=> Unit): PowerChordDescription =
+  def power(body: PowerChordSpec ?=> Unit): PowerChordDescription =
     given spec: PowerChordSpec = new PowerChordSpec
     body
     PowerChordDescription(
