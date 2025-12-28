@@ -35,7 +35,7 @@ val chordObj = ChordInterpreter.interpret(chordDesc)
 println(chordObj.render)
 println(chordObj.toString)
 
-val add2Desc = Add.chord {
+val add2Desc = add {
   root(C)
   addedNote(Add2)
 }
