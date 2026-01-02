@@ -211,7 +211,7 @@ extension (n: Note)
 
   /** alias for a diatonic transposition
     * @param interval
-    *   used to transpose to a higher pitch pass backwards = true is you wish a lower pitch
+    *   used to transpose to a higher pitch; pass backwards = true if you wish a lower pitch
     * @return
     */
   def >>(interval: Interval): Note = n.transposeDiatonically(interval)

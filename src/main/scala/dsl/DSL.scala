@@ -4,6 +4,8 @@ package dsl
 import notes.*
 import extensions.*
 import chords.*
+
+import org.aranadedoros.chordal.interpreter.ChordInterpreter
 ////////////////////////////////////////
 // Base
 ////////////////////////////////////////
@@ -57,6 +59,8 @@ final case class ChordDescription(
   quality: ChordQuality,
   extensions: List[Extension]
 )
+extension (c: ChordDescription)
+  def realize: Triad = ChordInterpreter.interpret(c)
 
 final class ChordSpec
     extends BasicSpec

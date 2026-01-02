@@ -21,7 +21,7 @@ sealed trait Chord:
     * @return
     *   A chord representation with its quality. e.g. Cm, C
     */
-  def render: String
+  def name: String
   protected def transposeNotes(
     notes: List[Note],
     interval: Interval,
@@ -36,6 +36,7 @@ sealed trait Chord:
           val movement = floorMod(idx + semitoneToMove, Pitch.chromatic.length)
           Note(Pitch.chromatic(movement))
       }
+  def notes: String = toString
 
 sealed trait NoThird
 sealed trait Add:
@@ -70,7 +71,7 @@ case class AddChord(root: Note, extensions: List[Note] = Nil, add: Add)
     else extensions.map(_.toString).mkString(",", ",", ",")
     s"($root,$addedNote$ext)"
 
-  override def render: String =
+  override def name: String =
     val ext =
       if extensions.isEmpty then ""
       else extensions.map(_.toString).mkString("(", ",", ")")
@@ -128,7 +129,7 @@ case class SuspendedChord(
     else extensions.map(_.toString).mkString("", ",", ",")
     s"($root,$suspendedNote,$fifth$ext)"
 
-  override def render: String =
+  override def name: String =
     val ext =
       if extensions.isEmpty then ""
       else extensions.map(_.toString).mkString("(", ",", ")")
@@ -161,7 +162,7 @@ object SuspendedChord:
     )
 
 case class PowerChord(root: Note) extends Chord:
-  override def render: String   = s"(${root}5)"
+  override def name: String     = s"(${root}5)"
   def fifth: Note               = root.transposeDiatonically(FifthPerfectInterval)
   override def toString: String = s"($root,$fifth)"
   override def transposeBy(interval: Interval, backwards: Boolean): PowerChord =
@@ -253,7 +254,7 @@ case class Triad(root: Note, quality: ChordQuality, extensions: List[Extension] 
       root :: third :: fifth :: seventh.toList ::: extensionNotes
     notes.mkString("(", ",", ")")
 
-  override def render: String =
+  override def name: String =
     val exts = extensions.map(_.symbol).mkString
     s"$root${quality.symbol}$exts"
 
