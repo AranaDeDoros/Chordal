@@ -19,7 +19,7 @@ class RomanDegreeSuite extends FunSuite:
         RomanDegree.IV
       )
 
-    val rendered = progression.chords.map(_.render)
+    val rendered = progression.chords.map(_.name)
 
     assertEquals(
       rendered,
@@ -38,7 +38,7 @@ class RomanDegreeSuite extends FunSuite:
         RomanDegree.I
       )
 
-    val rendered = progression.chords.map(_.render)
+    val rendered = progression.chords.map(_.name)
 
     assertEquals(
       rendered,
@@ -52,5 +52,5 @@ class RomanDegreeSuite extends FunSuite:
     val chord =
       Triad.fromDegree(tonic.root, RomanDegree.viidim)
     assertEquals(chord.quality, DiminishedChord)
-    assertEquals(chord.render, "B°")
+    assertEquals(chord.name, "B°")
   }

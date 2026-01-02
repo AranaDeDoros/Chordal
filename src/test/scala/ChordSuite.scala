@@ -79,7 +79,7 @@ class ChordSuite extends FunSuite:
     val add = chord.add9
 
     assertEquals(add.addedNote.toString, "D")
-    assertEquals(add.render, "Cadd9")
+    assertEquals(add.name, "Cadd9")
   }
 
   test("transpose chord by whole step") {
