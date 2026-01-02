@@ -69,7 +69,7 @@ case class AddChord(root: Note, extensions: List[Note] = Nil, add: Add)
   override def toString: String =
     val ext: String = if extensions.isEmpty then ""
     else extensions.map(_.toString).mkString(",", ",", ",")
-    s"($root,$addedNote$ext)"
+    s"($root,$third,$fifth,$addedNote$ext)"
 
   override def name: String =
     val ext =

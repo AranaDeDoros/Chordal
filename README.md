@@ -46,9 +46,9 @@ println(add2Obj.notes)
 ```
 ```text
 C9
-(C,E,G,D)
+(C,E,G,D) <- fixing this right now
 Cadd2
-(C,D)
+(C,E,G,D)
 ```
 ### Procedural
 ```scala
@@ -114,10 +114,7 @@ C
 C#
 ```
 ## TODO ##
-1. [x] Work building progressions (partial regular triad support)
-2. [x] Print chords with useful names such as C, Cmaj7, Cm, etc.
-3. [x] Ponder about the validations of the sharpen and flatten ops. 
-4. [x] Somehow work out enharmonics.
-5. [ ] Model tetrachords better.
-6. [ ] Print chord intervalic formulas.
-7. [ ] Improve syntax to read like english.
+1. [x] Improve syntax to read like english.
+2. [ ] Fix naming issues (ongoing).
+3. [ ] Print chord intervalic formulas.
+4. [ ] Model tetrachords better.
