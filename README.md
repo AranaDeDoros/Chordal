@@ -26,22 +26,23 @@ Another WIP DSL experiment to represent music elements. Work with Notes to creat
 ```scala
 //on progress, subject to changes
 val C = "C".note
-val chordDesc = chord {
+val CMajor = chord {
   root(C)
   quality(MajorChord)
   withExtensions(Ninth)
-}
-val chordObj = ChordInterpreter.interpret(chordDesc)
-println(chordObj.render)
-println(chordObj.toString)
+} realize
+
+println(CMajor.name)
+println(CMajor.notes)
 
 val add2Desc = add {
   root(C)
   addedNote(Add2)
 }
 val add2Obj = AddedChordInterpreter.interpret(add2Desc)
-println(add2Obj.render)
-println(add2Obj.toString)
+println(add2Obj.name)
+println(add2Obj.notes)
+
 ```
 ```text
 C9
@@ -55,37 +56,46 @@ Cadd2
 val root  = "C".note
 val third = root.transposeDiatonically(ThirdMajorInterval)
 val fifth = root.transposeDiatonically(FifthPerfectInterval)
+
 // let's create the chord
 val chord = Triad(root, MajorChord)
 println(chord)
+
 // but we're playing rock, let's drop that third and gets us a
 val powerChord = chord.toPowerChord
 println(powerChord)
+
 // let's add an extension
 val flatNinth = chord.addExtension(FlatNinth)
 println(s"$flatNinth") // will find out how to work with enharmonics later
+
 val susChord = chord.sus2
 println(susChord)
 val addChord = chord.add9
 println(addChord)
 println(addChord.addedNote)
 println(addChord.render)
+
 val cRoot      = "C".note
 val thirdM     = root.transposeDiatonically(ThirdMinorInterval)
 val fifthP     = root.transposeDiatonically(FifthPerfectInterval)
 val minorChord = Triad(cRoot, MinorChord)
 val add2       = minorChord.add2
 println(add2)
+
 val c = Triad.major("C".note)
 val pop =
   Progression.fromDegrees(c, RomanDegree.I, RomanDegree.V, RomanDegree.vi, RomanDegree.IV)
 println(pop)
+
 val sharpEleventh = c.addExtension(SharpEleventh)
 println(sharpEleventh)
+
 val seventhMajor = Triad("C".note, SeventhMajorChord)
 println(seventhMajor.render)
 println("C#".note.toPitch)
 println("C".note.sharpen)
+
 ```
 ### Output ###
 ```text
