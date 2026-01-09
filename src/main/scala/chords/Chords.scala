@@ -245,17 +245,24 @@ case class Triad(root: Note, quality: ChordQuality, extensions: List[Extension] 
     )
 
   def extensionNotes: List[Note] =
-    extensions.map(
-      e => root.transposeDiatonically(e.interval)
-    )
+    seventh match
+      case Some(s) => extensions.map(
+          e => root.transposeDiatonically(e.interval)
+        )
+      case None => Nil
 
   override def toString: String =
-    val notes =
-      root :: third :: fifth :: seventh.toList ::: extensionNotes
+    val notes = seventh match
+      case Some(s) => extensions.map(
+          e => root :: third :: fifth :: seventh.toList ::: extensionNotes
+        )
+      case None => root :: third :: fifth :: seventh.toList
     notes.mkString("(", ",", ")")
 
   override def name: String =
-    val exts = extensions.map(_.symbol).mkString
+    val exts = seventh match
+      case Some(s) => extensions.map(_.symbol).mkString
+      case None    => ""
     s"$root${quality.symbol}$exts"
 
   override def transposeBy(interval: Interval, backwards: Boolean): Triad =
@@ -303,3 +310,52 @@ extension (chord: Triad)
   def add9: AddChord       = Add(chord, Add9)
   def sus2: SuspendedChord = SuspendedChord.sus2(chord)
   def sus4: SuspendedChord = SuspendedChord.sus4(chord)
+
+
+sealed trait TriadQuality {
+  def third: Interval
+  def fifth: Interval
+  def symbol: String
+}
+
+sealed trait SeventhQuality extends TriadQuality {
+  def seventh: Interval
+}
+
+case class SeventhChord(
+  triad: Triad,
+  quality: SeventhQuality
+) extends Chord {
+
+  def seventh: Note =
+    triad.root.transposeDiatonically(quality.seventh)
+
+  def addExtension(ext: Extension): ExtendedChord =
+    ExtendedChord(this, List(ext))
+
+  override def name: String =
+    s"${triad.root}${quality.symbol}"
+
+  override def transposeBy(interval: Interval, backwards: Boolean): Chord = ???
+}
+
+case class ExtendedChord(
+  base: SeventhChord,
+  extensions: List[Extension]
+) extends Chord {
+
+  def extensionNotes: List[Note] =
+    extensions.map(
+      e =>
+        base.triad.root.transposeDiatonically(e.interval)
+    )
+
+  override def name: String =
+    s"${base.name}${extensions.map(_.symbol).mkString}"
+
+  override def transposeBy(interval: Interval, backwards: Boolean): Chord = ???
+}
+
+
+
+
