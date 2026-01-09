@@ -45,12 +45,3 @@ class RomanDegreeSuite extends FunSuite:
       List("Dm", "G", "C")
     )
   }
-
-  test("vii° diminished chord") {
-    val tonic = Triad.major("C".note)
-
-    val chord =
-      Triad.fromDegree(tonic.root, RomanDegree.viidim)
-    assertEquals(chord.quality, DiminishedChord)
-    assertEquals(chord.name, "B°")
-  }

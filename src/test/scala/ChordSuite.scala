@@ -14,7 +14,7 @@ class ChordSuite extends FunSuite:
     val third = root.transposeDiatonically(ThirdMajorInterval)
     val fifth = root.transposeDiatonically(FifthPerfectInterval)
 
-    val chord = Triad(root, MajorChord)
+    val chord = Triad(root, MajorTriad)
 
     assertEquals(chord.root.toString, "C")
     assertEquals(chord.third.toString, "E")
