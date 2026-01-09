@@ -3,18 +3,19 @@ package progressions
 
 import chords.*
 import intervals.*
+import notes.Note
 
 enum RomanDegree(
   val diatonicSteps: Int,
-  val quality: ChordQuality
+  val quality: TriadQuality
 ):
-  case I      extends RomanDegree(0, MajorChord)
-  case ii     extends RomanDegree(1, MinorChord)
-  case iii    extends RomanDegree(2, MinorChord)
-  case IV     extends RomanDegree(3, MajorChord)
-  case V      extends RomanDegree(4, MajorChord)
-  case vi     extends RomanDegree(5, MinorChord)
-  case viidim extends RomanDegree(6, DiminishedChord)
+  case I      extends RomanDegree(0, MajorTriad)
+  case ii     extends RomanDegree(1, MinorTriad)
+  case iii    extends RomanDegree(2, MinorTriad)
+  case IV     extends RomanDegree(3, MajorTriad)
+  case V      extends RomanDegree(4, MajorTriad)
+  case vi     extends RomanDegree(5, MinorTriad)
+  case viidim extends RomanDegree(6, DiminishedTriad)
 /* progression */
 object Progression:
   /** ii–V–I (Jazz) */
@@ -54,7 +55,7 @@ object Progression:
     val chords =
       degrees.toList.map {
         degree =>
-          Triad.fromDegree(tonic.root, degree)
+          degree.toTriad(tonic.root)
       }
     Progression(chords)
 
@@ -88,3 +89,11 @@ extension (c: Triad)
   def pop: Progression    = Progression.pop(c)
   def blues: Progression  = Progression.blues(c)
   def ballad: Progression = Progression.ballad(c)
+
+extension (degree: RomanDegree)
+  def toTriad(tonic: Note): Triad =
+    val root =
+      tonic.transposeDiatonically(
+        Interval.fromDiatonicSteps(degree.diatonicSteps)
+      )
+    Triad(root, degree.quality)

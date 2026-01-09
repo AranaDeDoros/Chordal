@@ -1,71 +1,53 @@
 package org.aranadedoros.chordal
 package interpreter
 
-import dsl.*
 import chords.*
+import dsl.*
+import extensions.Extension
+import notes.Note
 
-object RegularChord:
-  def chord(body: ChordSpec ?=> Unit): ChordDescription =
-    given spec: ChordSpec = new ChordSpec
-    body
-    ChordDescription(
-      root = spec.root.getOrElse(throw new IllegalStateException("root missing")),
-      quality = spec.quality.getOrElse(throw new IllegalStateException("quality missing")),
-      extensions = spec.extensions
-    )
+sealed trait ChordDesc
+
+object ChordDesc:
+
+  case class TriadDesc(
+    root: Note,
+    quality: TriadQuality,
+    extensions: List[Extension]
+  ) extends ChordDesc
+
+  case class SuspendedDesc(
+    root: Note,
+    suspension: Suspension,
+    extensions: List[Extension]
+  ) extends ChordDesc
+
+  case class AddedDesc(
+    base: TriadDesc,
+    add: Add,
+    extensions: List[Extension]
+  ) extends ChordDesc
+
+  case class PowerDesc(
+    root: Note
+  ) extends ChordDesc
 
 object ChordInterpreter:
-  def interpret(desc: ChordDescription): Triad =
-    Triad(desc.root, desc.quality).addExtensions(desc.extensions)
 
-object Suspended:
-  def sus(body: SuspendedChordSpec ?=> Unit): SuspendedChordDescription =
-    given spec: SuspendedChordSpec = new SuspendedChordSpec
-    body
-    SuspendedChordDescription(
-      root = spec.root.getOrElse(
-        throw new IllegalStateException("Chord root not specified")
-      ),
-      suspension = spec.suspension.getOrElse(
-        throw new IllegalStateException("Chord suspension not specified")
-      ),
-      extensions = spec.extensions
-    )
+  private def triad(desc: ChordDesc.TriadDesc): Triad =
+    Triad(desc.root, desc.quality)
 
-object SuspendedChordInterpreter:
-  def interpret(desc: SuspendedChordDescription): SuspendedChord =
-    SuspendedChord(root = desc.root, suspension = desc.suspension, extensions = Nil)
+  def interpret(desc: ChordDesc): Chord =
+    desc match
 
-object Add:
-  def add(body: AddedChordSpec ?=> Unit): AddedChordDescription =
-    given spec: AddedChordSpec = new AddedChordSpec
-    body
-    AddedChordDescription(
-      root = spec.root.getOrElse(
-        throw new IllegalStateException("Chord root not specified")
-      ),
-      addedNote = spec.addedNote.getOrElse(
-        throw new IllegalStateException("Chord add not specified")
-      ),
-      extensions = spec.extensions
-    )
+      case t: ChordDesc.TriadDesc =>
+        triad(t)
 
-object AddedChordInterpreter:
-  def interpret(desc: AddedChordDescription): AddChord =
-    AddChord(root = desc.root, add = desc.addedNote)
+      case ChordDesc.SuspendedDesc(root, suspension, _) =>
+        SuspendedChord(root, suspension)
 
-object Power:
-  def power(body: PowerChordSpec ?=> Unit): PowerChordDescription =
-    given spec: PowerChordSpec = new PowerChordSpec
-    body
-    PowerChordDescription(
-      root = spec.root.getOrElse(
-        throw new IllegalStateException("Chord root not specified")
-      )
-    )
+      case ChordDesc.AddedDesc(base, add, _) =>
+        AddChord(triad(base), add)
 
-object PowerChordInterpreter:
-  def interpret(desc: PowerChordDescription): PowerChord =
-    PowerChord(
-      root = desc.root
-    )
+      case ChordDesc.PowerDesc(root) =>
+        PowerChord(root)

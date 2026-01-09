@@ -1,127 +1,123 @@
 package org.aranadedoros.chordal
 package dsl
 
-import notes.*
-import extensions.*
 import chords.*
+import extensions.*
+import notes.*
 
-import org.aranadedoros.chordal.interpreter.ChordInterpreter
-////////////////////////////////////////
-// Base
-////////////////////////////////////////
+sealed trait ChordDesc:
+  def root: Note
+  def extensions: List[Extension]
 
-trait BasicSpec
+object ChordDesc:
 
-////////////////////////////////////////
-// Capabilities
-////////////////////////////////////////
+  case class TriadDesc(
+    root: Note,
+    quality: TriadQuality,
+    extensions: List[Extension] = Nil
+  ) extends ChordDesc
 
-trait HasRoot:
-  var root: Option[Note]
+  case class SuspendedDesc(
+    root: Note,
+    suspension: Suspension,
+    extensions: List[Extension] = Nil
+  ) extends ChordDesc
 
-trait HasQuality:
-  var quality: Option[ChordQuality]
+  case class PowerDesc(
+    root: Note
+  ) extends ChordDesc:
+    val extensions: List[Extension] = Nil
 
-trait HasExtensions:
-  var extensions: List[Extension]
+  case class AddedDesc(
+    base: TriadDesc,
+    add: Add,
+    extensions: List[Extension] = Nil
+  ) extends ChordDesc:
+    def root: Note = base.root
 
-trait HasSuspension:
-  var suspension: Option[Suspension]
+object dsl:
 
-trait HasAddedNote:
-  var addedNote: Option[Add]
+  def triad(root: Note, quality: TriadQuality) =
+    ChordDesc.TriadDesc(root, quality)
 
-////////////////////////////////////////
-// DSL OPERATIONS
-////////////////////////////////////////
+  def sus(root: Note, s: Suspension) =
+    ChordDesc.SuspendedDesc(root, s)
 
-def root(note: Note)(using spec: HasRoot): Unit =
-  spec.root = Some(note)
+  def power(root: Note) =
+    ChordDesc.PowerDesc(root)
 
-def quality(q: ChordQuality)(using spec: HasQuality): Unit =
-  spec.quality = Some(q)
+  def add(base: ChordDesc.TriadDesc, add: Add): ChordDesc.AddedDesc =
+    ChordDesc.AddedDesc(base, add)
 
-def withExtensions(exts: Extension*)(using spec: HasExtensions): Unit =
-  spec.extensions = exts.toList
+extension (c: ChordDesc)
+  def withExtensions(exts: Extension*): ChordDesc =
+    c match
+      case t: ChordDesc.TriadDesc     => t.copy(extensions = exts.toList)
+      case s: ChordDesc.SuspendedDesc => s.copy(extensions = exts.toList)
+      case a: ChordDesc.AddedDesc     => a.copy(extensions = exts.toList)
+      case p: ChordDesc.PowerDesc     => p
 
-def suspension(s: Suspension)(using spec: HasSuspension): Unit =
-  spec.suspension = Some(s)
+final class ChordBuilder:
 
-def addedNote(a: Add)(using spec: HasAddedNote): Unit =
-  spec.addedNote = Some(a)
+  private var root: Option[Note]             = None
+  private var quality: Option[TriadQuality]  = None
+  private var suspension: Option[Suspension] = None
+  private var add: Option[Add]               = None
+  private var extensions: List[Extension]    = Nil
 
-////////////////////////////////////////
-// TRIAD / REGULAR CHORD
-////////////////////////////////////////
+  // setters (used by DSL syntax)
+  def setRoot(n: Note): Unit                   = root = Some(n)
+  def setQuality(q: TriadQuality): Unit        = quality = Some(q)
+  def setSuspension(s: Suspension): Unit       = suspension = Some(s)
+  def setAdd(a: Add): Unit                     = add = Some(a)
+  def setExtensions(es: List[Extension]): Unit = extensions = es
 
-final case class ChordDescription(
-  root: Note,
-  quality: ChordQuality,
-  extensions: List[Extension]
-)
-extension (c: ChordDescription)
-  def realize: Triad = ChordInterpreter.interpret(c)
+  def build(): ChordDesc =
+    (root, quality, suspension, add) match
 
-final class ChordSpec
-    extends BasicSpec
-    with HasRoot
-    with HasQuality
-    with HasExtensions:
+      case (Some(r), Some(q), None, None) =>
+        ChordDesc.TriadDesc(r, q, extensions)
 
-  var root: Option[Note]            = None
-  var quality: Option[ChordQuality] = None
-  var extensions: List[Extension]   = Nil
+      case (Some(r), None, Some(s), None) =>
+        ChordDesc.SuspendedDesc(r, s, extensions)
 
-////////////////////////////////////////
-// SUSPENDED
-////////////////////////////////////////
+      case (Some(r), Some(q), None, Some(a)) =>
+        ChordDesc.AddedDesc(
+          ChordDesc.TriadDesc(r, q),
+          a,
+          extensions
+        )
 
-final case class SuspendedChordDescription(
-  root: Note,
-  suspension: Suspension,
-  extensions: List[Extension]
-)
+      case (Some(r), None, None, None) =>
+        ChordDesc.PowerDesc(r)
 
-final class SuspendedChordSpec
-    extends BasicSpec
-    with HasRoot
-    with HasSuspension
-    with HasExtensions:
-
-  var root: Option[Note]             = None
-  var suspension: Option[Suspension] = None
-  var extensions: List[Extension]    = Nil
-
-////////////////////////////////////////
-// ADDED
-////////////////////////////////////////
-
-final case class AddedChordDescription(
-  root: Note,
-  addedNote: Add,
-  extensions: List[Extension]
-)
-
-final class AddedChordSpec
-    extends BasicSpec
-    with HasRoot
-    with HasAddedNote
-    with HasExtensions:
-
-  var root: Option[Note]          = None
-  var addedNote: Option[Add]      = None
-  var extensions: List[Extension] = Nil
+      case _ =>
+        throw new IllegalStateException("Invalid chord specification")
 
 ////////////////////////////////////////
-// POWER
+// Entry point
 ////////////////////////////////////////
 
-final case class PowerChordDescription(
-  root: Note
-)
+def chord(body: ChordBuilder ?=> Unit): ChordDesc =
+  given builder: ChordBuilder = new ChordBuilder
+  body
+  builder.build()
 
-final class PowerChordSpec
-    extends BasicSpec
-    with HasRoot:
+////////////////////////////////////////
+// DSL operations
+////////////////////////////////////////
 
-  var root: Option[Note] = None
+def root(n: Note)(using b: ChordBuilder): Unit =
+  b.setRoot(n)
+
+def quality(q: TriadQuality)(using b: ChordBuilder): Unit =
+  b.setQuality(q)
+
+def sus(s: Suspension)(using b: ChordBuilder): Unit =
+  b.setSuspension(s)
+
+def add(a: Add)(using b: ChordBuilder): Unit =
+  b.setAdd(a)
+
+def withExtensions(es: Extension*)(using b: ChordBuilder): Unit =
+  b.setExtensions(es.toList)

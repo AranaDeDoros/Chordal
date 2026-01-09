@@ -25,7 +25,7 @@ class ChordSuite extends FunSuite:
     val root = "C".note
     val chord = Triad(
       root,
-      MajorChord
+      MajorTriad
     )
 
     val power = chord.toPowerChord
@@ -34,33 +34,11 @@ class ChordSuite extends FunSuite:
     assertEquals(power.fifth.toString, "G")
   }
 
-  test("add minor seventh extension") {
-    val root = "C".note
-    val chord = Triad(
-      root,
-      SeventhMinorChord
-    )
-
-    val seventh = root.transposeDiatonically(SeventhMinorInterval)
-    println(chord)
-    val extended = chord.addExtension(FlatNinth)
-    println(extended.extensionNotes)
-    assertEquals(extended.extensions.size, 1)
-    val extensionFound = extended.extensionNotes.find(
-      p => p.toString == "Db"
-    )
-    val ninthFound = extensionFound match
-      case Some(n) => true
-      case None    => false
-    assert(ninthFound, "ninth was found")
-
-  }
-
   test("sus2 replaces the third with a second") {
     val root = "C".note
     val chord = Triad(
       root,
-      MajorChord
+      MajorTriad
     )
 
     val sus = chord.sus2
@@ -73,7 +51,7 @@ class ChordSuite extends FunSuite:
     val root = "C".note
     val chord = Triad(
       root,
-      MajorChord
+      MajorTriad
     )
 
     val add = chord.add9
@@ -86,7 +64,7 @@ class ChordSuite extends FunSuite:
     val root = "C".note
     val chord = Triad(
       root,
-      MajorChord
+      MajorTriad
     )
 
     val dChord = chord.transposeBy(SecondMajorInterval)

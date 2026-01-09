@@ -165,14 +165,13 @@ extension (s: String)
   def major: Chord = M
   def M: Chord =
     val root = Note(s)
-    Triad(root, MajorChord)
+    Triad(root, MajorTriad)
   def minor: Chord = min
   def min: Chord =
     val root = Note(s)
-    Triad(root, MinorChord)
-  def Maj: Triad        = Triad(Note(s), SeventhMajorChord)
-  def dim: Triad        = Triad(Note(s), DiminishedChord)
-  def aug: Triad        = Triad(Note(s), AugmentedChord)
+    Triad(root, MinorTriad)
+  def dim: Triad        = Triad(Note(s), DiminishedTriad)
+  def aug: Triad        = Triad(Note(s), AugmentedTriad)
   def power: PowerChord = PowerChord(Note(s))
   def pow: PowerChord   = power
   def sharpen: Note =
@@ -189,14 +188,13 @@ extension (n: Note)
     n
       .transposeDiatonically(SecondMinorInterval)
   def major: Triad =
-    Triad(n, MajorChord)
-  def M: Triad = Triad(n, MajorChord)
+    Triad(n, MajorTriad)
+  def M: Triad = Triad(n, MajorTriad)
   def minor: Triad =
-    Triad(n, MinorChord)
-  def m: Triad        = Triad(n, MinorChord)
-  def Maj: Triad      = Triad(n, SeventhMajorChord)
-  def dim: Triad      = Triad(n, DiminishedChord)
-  def aug: Triad      = Triad(n, AugmentedChord)
+    Triad(n, MinorTriad)
+  def m: Triad        = Triad(n, MinorTriad)
+  def dim: Triad      = Triad(n, DiminishedTriad)
+  def aug: Triad      = Triad(n, AugmentedTriad)
   def pow: PowerChord = PowerChord(n)
 
   /** alias for a ChromaticUp transposition
