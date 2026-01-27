@@ -35,19 +35,40 @@ object ChordDesc:
   ) extends ChordDesc:
     def root: Note = base.root
 
-object dsl:
+def triad(root: Note, quality: TriadQuality) =
+  ChordDesc.TriadDesc(root, quality)
 
-  def triad(root: Note, quality: TriadQuality) =
-    ChordDesc.TriadDesc(root, quality)
+def sus(root: Note, s: Suspension) =
+  ChordDesc.SuspendedDesc(root, s)
 
-  def sus(root: Note, s: Suspension) =
-    ChordDesc.SuspendedDesc(root, s)
+def power(root: Note) =
+  ChordDesc.PowerDesc(root)
 
-  def power(root: Note) =
-    ChordDesc.PowerDesc(root)
+def add(base: ChordDesc.TriadDesc, add: Add): ChordDesc.AddedDesc =
+  ChordDesc.AddedDesc(base, add)
 
-  def add(base: ChordDesc.TriadDesc, add: Add): ChordDesc.AddedDesc =
-    ChordDesc.AddedDesc(base, add)
+////////////////////////////////////////
+// Notes Values
+////////////////////////////////////////
+object Notes:
+  val C = Note("C")
+  val D = Note("D")
+  val E = Note("E")
+  val F = Note("F")
+  val G = Note("G")
+  val A = Note("A")
+  val B = Note("B")
+
+  val Cs = Note("C#")
+  val Db = Note("Db")
+  val Ds = Note("D#")
+  val Eb = Note("Eb")
+  val Fs = Note("F#")
+  val Gb = Note("Gb")
+  val Gs = Note("Gs")
+  val Ab = Note("Ab")
+  val As = Note("As")
+  val Bb = Note("Bb")
 
 extension (c: ChordDesc)
   def withExtensions(exts: Extension*): ChordDesc =

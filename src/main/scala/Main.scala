@@ -2,9 +2,9 @@ package org.aranadedoros.chordal
 
 import chords.*
 import dsl.*
+import dsl.Notes.E
 import extensions.Ninth
-import notes.{major, note, Note}
-import interpreter.ChordInterpreter
+import notes.{note, Note}
 
 import scala.language.postfixOps
 
@@ -76,24 +76,24 @@ object Main:
 
     println(List(ii7, V7, Imaj7).map(_.name))
 
-    val c1 =
+    val chord1 =
       chord {
         root(C)
         quality(MajorTriad)
         withExtensions(Ninth)
       }
 
-    println(c1)
+    println(chord1)
 
-    val c2 =
+    val chord2 =
       chord {
         root("D".note)
         sus(Sus4)
       }
-    println(c2)
+    println(chord2)
 
-    val c3 =
+    val chord3 =
       chord {
-        root("E".note)
+        root(E)
       }
-    println(c3)
+    println(chord3)
