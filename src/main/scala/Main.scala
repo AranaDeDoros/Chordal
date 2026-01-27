@@ -2,9 +2,9 @@ package org.aranadedoros.chordal
 
 import chords.*
 import dsl.*
-import dsl.Notes.E
+import dsl.Notes.{D, E}
 import extensions.Ninth
-import notes.{note, Note}
+import notes.{major, note, Note}
 
 import scala.language.postfixOps
 
@@ -97,3 +97,7 @@ object Main:
         root(E)
       }
     println(chord3)
+
+    val dMajor: Triad =
+      D major
+    println(dMajor)

@@ -29,11 +29,9 @@ package org.aranadedoros.chordal
 
 import chords.*
 import dsl.*
-import dsl.Notes.E
+import dsl.Notes.{D, E}
 import extensions.Ninth
-import notes.{note, Note}
-
-import scala.language.postfixOps
+import notes.{major, note, Note}
 
 object Main:
   def main(args: Array[String]): Unit =
@@ -125,6 +123,10 @@ object Main:
     }
   println(chord3)
 
+  val dMajor: Triad =
+    D major
+  println(dMajor)
+
 ```
 ### Output ###
 ```text
@@ -151,6 +153,7 @@ List(Dm7, G7, Cmaj7)
 TriadDesc(C,MajorTriad,List(Ninth))
 SuspendedDesc(D,sus4,List())
 PowerDesc(E)
+(D,F#,A)
 ```
 ## TODO ##
 1. [x] Improve syntax to read like english.

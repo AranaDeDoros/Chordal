@@ -187,15 +187,15 @@ extension (n: Note)
   def sharpenDiatonic: Note =
     n
       .transposeDiatonically(SecondMinorInterval)
-  def major: Triad =
+  infix def major: Triad =
     Triad(n, MajorTriad)
-  def M: Triad = Triad(n, MajorTriad)
-  def minor: Triad =
+  infix def M: Triad = Triad(n, MajorTriad)
+  infix def minor: Triad =
     Triad(n, MinorTriad)
-  def m: Triad        = Triad(n, MinorTriad)
-  def dim: Triad      = Triad(n, DiminishedTriad)
-  def aug: Triad      = Triad(n, AugmentedTriad)
-  def pow: PowerChord = PowerChord(n)
+  infix def m: Triad        = Triad(n, MinorTriad)
+  infix def dim: Triad      = Triad(n, DiminishedTriad)
+  infix def aug: Triad      = Triad(n, AugmentedTriad)
+  infix def pow: PowerChord = PowerChord(n)
 
   /** alias for a ChromaticUp transposition
     * @return
