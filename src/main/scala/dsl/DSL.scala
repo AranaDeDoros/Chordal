@@ -65,9 +65,9 @@ object Notes:
   val Eb = Note("Eb")
   val Fs = Note("F#")
   val Gb = Note("Gb")
-  val Gs = Note("Gs")
+  val Gs = Note("G#")
   val Ab = Note("Ab")
-  val As = Note("As")
+  val As = Note("A#")
   val Bb = Note("Bb")
 
 extension (c: ChordDesc)
