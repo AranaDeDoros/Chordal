@@ -152,7 +152,7 @@ object SuspendedChord:
 
 case class PowerChord(root: Note) extends Chord, IntervallicChord:
 
-  override def name: String = s"(${root}5)"
+  override def name: String = s"${root}5"
 
   def intervals: List[Interval] =
     List(UnisonInterval, FifthPerfectInterval)
@@ -276,6 +276,8 @@ case class SeventhChord(
   override def name: String =
     s"${triad.name}${seventh.symbol}"
 
+  override def toString: String = asNotes
+
   def addExtensions(exts: List[Extension]): ExtendedChord =
     require(exts.forall(isValidExtension), s"Invalid extensions: $exts")
     ExtendedChord(this, exts)
@@ -327,6 +329,30 @@ case class ExtendedChord(
 extension (t: Triad)
   def withSeventh(q: SeventhQuality): SeventhChord =
     SeventhChord(t, q)
+
+case class SlashChord(
+  chord: Chord,
+  bass: Note
+) extends Chord {
+
+  override def transposeBy(interval: Interval, backwards: Boolean = false): SlashChord =
+    SlashChord(
+      chord.transposeBy(interval),
+      bass.transposeDiatonically(interval)
+    )
+
+  override def name: String =
+    s"${chord.name}/$bass"
+
+  override def toString: String =
+    s"${chord.toString}/$bass"
+}
+
+extension (c: Chord)
+  infix def /(bass: Note): SlashChord =
+    SlashChord(c, bass)
+  infix def withBass(bass: Note): SlashChord =
+    /(bass)
 
 object Voicing:
   def invert(chord: IntervallicChord, n: Int): List[Note] =
