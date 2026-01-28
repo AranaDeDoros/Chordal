@@ -15,18 +15,24 @@ object ChordDesc:
     root: Note,
     quality: TriadQuality,
     extensions: List[Extension] = Nil
-  ) extends ChordDesc
+  ) extends ChordDesc:
+    override def toString: String =
+      s"$root${quality.symbol}${extensions.map(_.symbol).mkString}"
 
   case class SuspendedDesc(
     root: Note,
     suspension: Suspension,
     extensions: List[Extension] = Nil
-  ) extends ChordDesc
+  ) extends ChordDesc:
+    override def toString: String =
+      s"$root$suspension${extensions.map(_.symbol).mkString}"
 
   case class PowerDesc(
     root: Note
   ) extends ChordDesc:
     val extensions: List[Extension] = Nil
+    override def toString: String =
+      s"${root}5"
 
   case class AddedDesc(
     base: TriadDesc,
@@ -34,6 +40,8 @@ object ChordDesc:
     extensions: List[Extension] = Nil
   ) extends ChordDesc:
     def root: Note = base.root
+    override def toString: String =
+      s"$root$add${extensions.map(_.symbol).mkString}"
 
 def triad(root: Note, quality: TriadQuality) =
   ChordDesc.TriadDesc(root, quality)
