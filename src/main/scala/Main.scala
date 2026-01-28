@@ -2,15 +2,15 @@ package org.aranadedoros.chordal
 
 import chords.*
 import dsl.*
-import dsl.Notes.{D, E}
+import dsl.Notes.{A, D, E, G}
 import extensions.Ninth
-import notes.{major, note, Note}
+import notes.{dim, major, note, pow, Note}
 
 import scala.language.postfixOps
 
 object Main:
   def main(args: Array[String]): Unit =
-
+    // as library
     val C  = Note("C")
     val D  = Note("D")
     val Eb = Note("Eb")
@@ -76,6 +76,7 @@ object Main:
 
     println(List(ii7, V7, Imaj7).map(_.name))
 
+    // as dsl
     val chord1 =
       chord {
         root(C)
@@ -101,3 +102,15 @@ object Main:
     val dMajor: Triad =
       D major
     println(dMajor)
+
+    val eMajorWithBassOnG: SlashChord =
+      E.major / G
+    println(eMajorWithBassOnG)
+
+    val g5: PowerChord =
+      G pow
+    println(g5.name)
+
+    val adim7 =
+      A.dim withSeventh (MinorSeventh)
+    println(adim7)
