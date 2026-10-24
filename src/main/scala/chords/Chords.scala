@@ -1,11 +1,11 @@
 package org.aranadedoros.chordal
 package chords
 
-import notes.*
-import intervals.*
-import progressions.RomanDegree
-import scala.math.floorMod
 import extensions.*
+import intervals.*
+import notes.*
+
+import scala.math.floorMod
 
 /* chords */
 private def isValidExtension(ext: Extension): Boolean =
@@ -333,7 +333,7 @@ extension (t: Triad)
 case class SlashChord(
   chord: Chord,
   bass: Note
-) extends Chord {
+) extends Chord:
 
   override def transposeBy(interval: Interval, backwards: Boolean = false): SlashChord =
     SlashChord(
@@ -346,7 +346,6 @@ case class SlashChord(
 
   override def toString: String =
     s"${chord.toString}/$bass"
-}
 
 extension (c: Chord)
   infix def /(bass: Note): SlashChord =
